@@ -16,7 +16,13 @@ function log(message, ...args) {
 }
 
 function logError(message, error) {
-  console.error(`[TokenCopier Content] ${message}`, error);
+  if (error && error.message) {
+    console.error(`[TokenCopier Content] ${message}: ${error.message}`);
+  } else if (typeof error === 'object' && error !== null) {
+    console.error(`[TokenCopier Content] ${message}:`, error.name || error.toString());
+  } else {
+    console.error(`[TokenCopier Content] ${message}`, error);
+  }
 }
 
 // ========== 剪贴板操作 ==========
@@ -44,7 +50,8 @@ async function copyToClipboard(text) {
     log('Clipboard API不可用，使用降级方案');
     return copyUsingExecCommand(text);
   } catch (error) {
-    logError('Clipboard API复制失败，尝试降级方案', error);
+    // Clipboard API失败（通常是权限或焦点问题），使用降级方案
+    log(`Clipboard API失败（${error.name}），使用降级方案`);
 
     // 尝试降级方案
     try {
@@ -115,30 +122,44 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       return true;
     }
 
-    // 异步复制
-    copyToClipboard(token)
-      .then((success) => {
-        if (success) {
-          log('Token复制成功');
-          chrome.runtime.sendMessage({ action: 'copySuccess' });
-          sendResponse({ success: true });
-        } else {
-          logError('Token复制失败');
+    // 确保document已聚焦
+    try {
+      window.focus();
+      document.body?.focus();
+    } catch (e) {
+      log('聚焦失败，但继续尝试复制:', e);
+    }
+
+    // 等待一小段时间确保聚焦完成
+    setTimeout(() => {
+      // 异步复制
+      copyToClipboard(token)
+        .then((success) => {
+          if (success) {
+            log('Token复制成功');
+            chrome.runtime.sendMessage({
+              action: 'copySuccess',
+              tokenLength: token.length
+            });
+            sendResponse({ success: true });
+          } else {
+            logError('Token复制失败');
+            chrome.runtime.sendMessage({
+              action: 'copyFailed',
+              error: '复制操作失败'
+            });
+            sendResponse({ success: false, error: '复制失败' });
+          }
+        })
+        .catch((error) => {
+          logError('复制过程异常', error);
           chrome.runtime.sendMessage({
             action: 'copyFailed',
-            error: '复制操作失败'
+            error: error.message || '未知错误'
           });
-          sendResponse({ success: false, error: '复制失败' });
-        }
-      })
-      .catch((error) => {
-        logError('复制过程异常', error);
-        chrome.runtime.sendMessage({
-          action: 'copyFailed',
-          error: error.message || '未知错误'
+          sendResponse({ success: false, error: error.message });
         });
-        sendResponse({ success: false, error: error.message });
-      });
+    }, 100);
 
     return true; // 保持消息通道开启（异步响应）
   }

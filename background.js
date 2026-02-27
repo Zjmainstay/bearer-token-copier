@@ -12,8 +12,8 @@
  */
 
 // ========== 全局变量 ==========
-let latestToken = null;        // 最新捕获的Token
-let tokenTimestamp = 0;        // Token捕获时间戳
+// 当前正在处理的标签页ID（点击插件后等待捕获Token）
+let pendingTabId = null;
 let isProcessing = false;      // 是否正在处理复制操作
 
 // ========== 日志工具 ==========
@@ -22,7 +22,13 @@ function log(message, ...args) {
 }
 
 function logError(message, error) {
-  console.error(`[TokenCopier] ${message}`, error);
+  if (error && error.message) {
+    console.error(`[TokenCopier] ${message}: ${error.message}`, error);
+  } else if (typeof error === 'object') {
+    console.error(`[TokenCopier] ${message}:`, JSON.stringify(error, null, 2));
+  } else {
+    console.error(`[TokenCopier] ${message}`, error);
+  }
 }
 
 // ========== Token管理 ==========
@@ -51,34 +57,44 @@ function extractToken(authHeader) {
  * 保存捕获的Token
  * @param {string} token - Token值
  */
-function saveToken(token) {
+function saveToken(token, tabId) {
   if (!token) return;
 
-  latestToken = token;
-  tokenTimestamp = Date.now();
+  // 只处理当前等待的标签页
+  if (tabId !== pendingTabId) {
+    return;
+  }
 
-  log(`Token已捕获（${token.length}字符）`);
+  log(`当前标签页Token已捕获（${token.length}字符）`);
 
-  // 更新图标状态
-  updateIcon(true);
+  // 立即复制Token
+  copyTokenToTab(tabId, token);
+
+  // 清理状态
+  pendingTabId = null;
 }
 
 /**
- * 获取最新的Token
- * @returns {string|null}
+ * 复制Token到指定标签页
  */
-function getToken() {
-  return latestToken;
-}
-
-/**
- * 清除Token
- */
-function clearToken() {
-  latestToken = null;
-  tokenTimestamp = 0;
-  updateIcon(false);
-  log('Token已清除');
+function copyTokenToTab(tabId, token) {
+  log('准备复制Token到标签页:', tabId);
+  chrome.tabs.sendMessage(
+    tabId,
+    { action: 'copyToken', token: token },
+    (response) => {
+      if (chrome.runtime.lastError) {
+        const errorMsg = chrome.runtime.lastError.message || '未知错误';
+        logError('发送消息失败', errorMsg);
+        showNotification(
+          '复制失败 ❌',
+          '无法与页面通信，请刷新页面后重试',
+          'error'
+        );
+        showErrorState();
+      }
+    }
+  );
 }
 
 // ========== 图标和Badge管理 ==========
@@ -135,10 +151,7 @@ function showSuccessState() {
     // 3秒后清除Badge，恢复到干净状态
     setTimeout(() => {
       chrome.action.setBadgeText({ text: '' });
-      // 保持Tooltip为已捕获状态
-      if (latestToken) {
-        chrome.action.setTitle({ title: '点击复制Token (已检测到)' });
-      }
+      chrome.action.setTitle({ title: '点击刷新并复制Token' });
       log('成功标记已清除');
     }, 3000);
   } catch (error) {
@@ -157,7 +170,8 @@ function showErrorState() {
 
     // 5秒后恢复默认状态
     setTimeout(() => {
-      updateIcon(!!latestToken);
+      chrome.action.setBadgeText({ text: '' });
+      chrome.action.setTitle({ title: '点击刷新并复制Token' });
     }, 5000);
 
     log('显示错误状态');
@@ -206,14 +220,20 @@ function showNotification(title, message, type = 'success') {
 chrome.webRequest.onBeforeSendHeaders.addListener(
   (details) => {
     try {
-      // 提取请求头
+      // 提取请求头和标签页ID
       const headers = details.requestHeaders || [];
+      const tabId = details.tabId;
+
+      // 忽略后台请求（tabId = -1）
+      if (tabId === -1) {
+        return {};
+      }
 
       for (const header of headers) {
         if (header.name.toLowerCase() === 'authorization') {
           const token = extractToken(header.value);
           if (token) {
-            saveToken(token);
+            saveToken(token, tabId);
             break;
           }
         }
@@ -237,7 +257,7 @@ log('网络请求监听已启动');
  * 处理图标点击事件
  */
 chrome.action.onClicked.addListener(async (tab) => {
-  log('用户点击了插件图标');
+  log('用户点击了插件图标, 标签页ID:', tab.id);
 
   // 防止重复点击
   if (isProcessing) {
@@ -249,53 +269,41 @@ chrome.action.onClicked.addListener(async (tab) => {
   showProcessingState();
 
   try {
-    // 刷新当前标签页
+    // 设置当前等待的标签页
+    pendingTabId = tab.id;
+    log('设置等待标签页:', pendingTabId);
+
+    // 刷新当前标签页（触发请求，捕获Token）
     log('开始刷新页面');
     await chrome.tabs.reload(tab.id);
 
-    // 等待页面加载完成
-    await waitForPageLoad(tab.id);
+    // 等待Token捕获（最多5秒）
+    const timeout = 5000;
+    const startTime = Date.now();
 
-    // 检查是否有Token
-    const token = getToken();
+    while (pendingTabId === tab.id && Date.now() - startTime < timeout) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
 
-    if (!token) {
-      log('未找到Token');
+    // 检查是否超时
+    if (pendingTabId === tab.id) {
+      log('未捕获到Token（超时）');
       showNotification(
         '未找到Token ⚠️',
         '请确认页面已登录或包含API请求',
         'warning'
       );
       showErrorState();
-      isProcessing = false;
-      return;
+      pendingTabId = null;
     }
+    // 如果pendingTabId已被清除，说明Token已捕获并复制（在saveToken中处理）
 
-    // 向Content Script发送消息，执行复制
-    log('准备复制Token');
-    chrome.tabs.sendMessage(
-      tab.id,
-      { action: 'copyToken', token: token },
-      (response) => {
-        if (chrome.runtime.lastError) {
-          logError('发送消息失败', chrome.runtime.lastError);
-          showNotification(
-            '复制失败 ❌',
-            '无法与页面通信，请重试',
-            'error'
-          );
-          showErrorState();
-        }
-      }
-    );
   } catch (error) {
-    logError('处理点击事件失败', error);
-    showNotification(
-      '操作失败 ❌',
-      error.message || '未知错误',
-      'error'
-    );
+    logError('处理失败', error);
+    showNotification('操作失败 ❌', error.message, 'error');
     showErrorState();
+    pendingTabId = null;
+  } finally {
     isProcessing = false;
   }
 });
@@ -335,12 +343,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
   if (request.action === 'copySuccess') {
     // 复制成功
-    const token = getToken();
-    const length = token ? token.length : 0;
+    const tokenLength = request.tokenLength || 0;
 
     showNotification(
       'Token已复制 ✅',
-      `复制了 ${length} 字符的Token`,
+      `复制了 ${tokenLength} 字符的Token`,
       'success'
     );
     showSuccessState();
