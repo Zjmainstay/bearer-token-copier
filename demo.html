@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bearer Token Copier - Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        .token-display {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            word-break: break-all;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .token-label {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .info {
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔑 Bearer Token Copier - Demo</h1>
+        <p class="info">页面已加载，自动发起带 Token 的 API 请求<br>现在可以点击插件图标测试复制功能</p>
+
+        <div class="token-display">
+            <div class="token-label">当前 Token:</div>
+            <div id="currentToken">加载中...</div>
+        </div>
+    </div>
+
+    <script>
+        // 生成随机Token
+        function generateToken() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let token = 'ghp_';
+            for (let i = 0; i < 36; i++) {
+                token += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return token;
+        }
+
+        // 页面加载时自动发起请求
+        window.addEventListener('load', () => {
+            const token = generateToken();
+            document.getElementById('currentToken').textContent = token;
+
+            // 自动发起带 Bearer Token 的请求
+            fetch('https://api.github.com/user', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            }).catch(() => {
+                // 忽略错误，只是为了产生网络请求
+            });
+        });
+    </script>
+</body>
+</html>
