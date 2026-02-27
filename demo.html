@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bearer Token Copier - 测试Demo</title>
+    <title>Bearer Token Copier - Demo</title>
     <style>
         * {
             margin: 0;
@@ -12,7 +12,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
@@ -25,306 +25,54 @@
             background: white;
             border-radius: 16px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 800px;
+            max-width: 600px;
             width: 100%;
             padding: 40px;
+            text-align: center;
         }
 
         h1 {
             color: #333;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             font-size: 28px;
-        }
-
-        .subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
-
-        .badge {
-            display: inline-block;
-            background: #4CAF50;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 500;
-            margin-left: 10px;
-        }
-
-        .section {
-            margin-bottom: 30px;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-
-        .section-title::before {
-            content: '';
-            display: inline-block;
-            width: 4px;
-            height: 20px;
-            background: #667eea;
-            margin-right: 10px;
-            border-radius: 2px;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        button {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #5568d3;
-        }
-
-        .btn-success {
-            background: #4CAF50;
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #45a049;
-        }
-
-        .btn-warning {
-            background: #ff9800;
-            color: white;
-        }
-
-        .btn-warning:hover {
-            background: #e68900;
-        }
-
-        .btn-danger {
-            background: #f44336;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #da190b;
-        }
-
-        .log-container {
-            background: #f5f5f5;
-            border-radius: 8px;
-            padding: 20px;
-            max-height: 300px;
-            overflow-y: auto;
-            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
-            font-size: 12px;
-            line-height: 1.6;
-        }
-
-        .log-entry {
-            margin-bottom: 8px;
-            padding: 8px;
-            background: white;
-            border-radius: 4px;
-            border-left: 3px solid #667eea;
-        }
-
-        .log-entry.success {
-            border-left-color: #4CAF50;
-        }
-
-        .log-entry.error {
-            border-left-color: #f44336;
-        }
-
-        .log-time {
-            color: #999;
-            font-size: 11px;
-        }
-
-        .log-message {
-            color: #333;
-            margin-top: 4px;
         }
 
         .token-display {
             background: #f5f5f5;
             border-radius: 8px;
-            padding: 15px;
-            margin-top: 15px;
+            padding: 20px;
+            margin-top: 20px;
             word-break: break-all;
             font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
-            font-size: 12px;
+            font-size: 14px;
             color: #333;
-            border: 1px dashed #ddd;
         }
 
         .token-label {
             font-weight: 600;
             color: #667eea;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
-        .info-box {
-            background: #e3f2fd;
-            border-left: 4px solid #2196F3;
-            padding: 15px;
-            border-radius: 4px;
+        .info {
             margin-top: 20px;
-        }
-
-        .info-box strong {
-            color: #1976D2;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            opacity: 0.9;
-        }
-
-        .icon {
-            font-size: 20px;
-        }
-
-        .clear-btn {
-            background: #e0e0e0;
             color: #666;
-            padding: 8px 16px;
-            font-size: 12px;
-        }
-
-        .clear-btn:hover {
-            background: #d0d0d0;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🔑 Bearer Token Copier - 测试Demo <span class="badge">v1.0</span></h1>
-        <p class="subtitle">点击下面的按钮发起API请求，然后点击插件图标测试Token复制功能</p>
+        <h1>🔑 Bearer Token Copier - Demo</h1>
+        <p class="info">页面已加载，自动发起带 Token 的 API 请求<br>现在可以点击插件图标测试复制功能</p>
 
-        <!-- 统计信息 -->
-        <div class="stats">
-            <div class="stat-card">
-                <div class="stat-value" id="requestCount">0</div>
-                <div class="stat-label">请求次数</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="tokenCount">0</div>
-                <div class="stat-label">Token已捕获</div>
-            </div>
-        </div>
-
-        <!-- 操作按钮 -->
-        <div class="section">
-            <div class="section-title">📡 API请求测试</div>
-            <div class="button-group">
-                <button class="btn-primary" onclick="makeRequest('github')">
-                    <span class="icon">🐙</span>
-                    GitHub API
-                </button>
-                <button class="btn-success" onclick="makeRequest('custom')">
-                    <span class="icon">🚀</span>
-                    自定义API
-                </button>
-                <button class="btn-warning" onclick="makeRequest('jsonplaceholder')">
-                    <span class="icon">📝</span>
-                    JSONPlaceholder
-                </button>
-                <button class="btn-danger" onclick="makeRequest('error')">
-                    <span class="icon">❌</span>
-                    触发错误
-                </button>
-            </div>
-
-            <div class="token-display">
-                <div class="token-label">当前使用的Token:</div>
-                <div id="currentToken">ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</div>
-            </div>
-        </div>
-
-        <!-- 请求日志 -->
-        <div class="section">
-            <div class="section-title">
-                📋 请求日志
-                <button class="clear-btn" onclick="clearLogs()" style="margin-left: auto;">清空日志</button>
-            </div>
-            <div class="log-container" id="logContainer">
-                <div class="log-entry">
-                    <div class="log-time">等待请求...</div>
-                    <div class="log-message">点击上面的按钮发起API请求，插件会自动捕获Authorization Token</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 使用说明 -->
-        <div class="info-box">
-            <strong>📖 使用说明:</strong>
-            <ol style="margin-top: 10px; padding-left: 20px;">
-                <li>点击上面的任意按钮发起API请求（请求会带上Authorization Bearer Token）</li>
-                <li>打开Chrome DevTools (F12) → Network标签，查看请求头中的Authorization字段</li>
-                <li>点击浏览器工具栏的插件图标（绿色钥匙）</li>
-                <li>页面会自动刷新，Token会复制到剪贴板</li>
-                <li>使用 Cmd+V (Mac) 或 Ctrl+V (Win) 粘贴测试</li>
-            </ol>
+        <div class="token-display">
+            <div class="token-label">当前 Token:</div>
+            <div id="currentToken">加载中...</div>
         </div>
     </div>
 
     <script>
-        let requestCount = 0;
-        let tokenCount = 0;
-
         // 生成随机Token
         function generateToken() {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -335,136 +83,21 @@
             return token;
         }
 
-        // 当前Token
-        let currentToken = generateToken();
-        document.getElementById('currentToken').textContent = currentToken;
-
-        // 添加日志
-        function addLog(message, type = 'info') {
-            const logContainer = document.getElementById('logContainer');
-            const entry = document.createElement('div');
-            entry.className = `log-entry ${type}`;
-
-            const time = new Date().toLocaleTimeString('zh-CN');
-            entry.innerHTML = `
-                <div class="log-time">${time}</div>
-                <div class="log-message">${message}</div>
-            `;
-
-            logContainer.insertBefore(entry, logContainer.firstChild);
-
-            // 限制日志数量
-            if (logContainer.children.length > 20) {
-                logContainer.removeChild(logContainer.lastChild);
-            }
-        }
-
-        // 清空日志
-        function clearLogs() {
-            document.getElementById('logContainer').innerHTML = `
-                <div class="log-entry">
-                    <div class="log-time">日志已清空</div>
-                    <div class="log-message">等待新的请求...</div>
-                </div>
-            `;
-        }
-
-        // 更新统计
-        function updateStats() {
-            document.getElementById('requestCount').textContent = requestCount;
-            document.getElementById('tokenCount').textContent = tokenCount;
-        }
-
-        // 发起请求
-        async function makeRequest(type) {
-            requestCount++;
-            tokenCount++;
-            updateStats();
-
-            // 保存请求类型到sessionStorage（用于页面刷新后自动重放）
-            sessionStorage.setItem('lastRequestType', type);
-
-            // 生成新Token
-            currentToken = generateToken();
-            document.getElementById('currentToken').textContent = currentToken;
-
-            let url, method = 'GET';
-            let description = '';
-
-            switch(type) {
-                case 'github':
-                    url = 'https://api.github.com/user';
-                    description = 'GitHub用户信息API';
-                    break;
-                case 'custom':
-                    url = 'https://httpbin.org/bearer';
-                    description = '自定义Bearer Token测试';
-                    break;
-                case 'jsonplaceholder':
-                    url = 'https://jsonplaceholder.typicode.com/posts/1';
-                    description = 'JSONPlaceholder示例';
-                    break;
-                case 'error':
-                    url = 'https://httpbin.org/status/401';
-                    description = '401未授权错误';
-                    break;
-            }
-
-            addLog(`🚀 发起请求: ${description}`, 'info');
-            addLog(`📍 URL: ${url}`, 'info');
-            addLog(`🔑 Token: ${currentToken.substring(0, 20)}...`, 'info');
-
-            try {
-                const response = await fetch(url, {
-                    method: method,
-                    headers: {
-                        'Authorization': `Bearer ${currentToken}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    addLog(`✅ 请求成功 (${response.status})`, 'success');
-                    addLog(`📦 响应数据: ${JSON.stringify(data).substring(0, 100)}...`, 'success');
-                } else {
-                    addLog(`⚠️ 请求失败 (${response.status})`, 'error');
-                }
-            } catch (error) {
-                addLog(`❌ 请求错误: ${error.message}`, 'error');
-            }
-
-            addLog(`💡 现在点击插件图标测试复制功能！`, 'info');
-        }
-
-        // 页面加载时的欢迎消息
+        // 页面加载时自动发起请求
         window.addEventListener('load', () => {
-            addLog('🎉 Demo页面加载完成', 'success');
-            addLog('📌 请确保已安装Bearer Token Auto Copier插件', 'info');
+            const token = generateToken();
+            document.getElementById('currentToken').textContent = token;
 
-            // 检查是否有上次的请求类型（用于页面刷新后自动重新请求）
-            const lastRequestType = sessionStorage.getItem('lastRequestType');
-            if (lastRequestType) {
-                addLog('🔄 检测到页面刷新，自动重新发起请求...', 'info');
-                setTimeout(() => {
-                    makeRequest(lastRequestType);
-                }, 500); // 延迟500ms确保页面完全加载
-            } else {
-                // 首次加载，自动发起一次GitHub API请求
-                addLog('🚀 首次加载，自动发起GitHub API请求...', 'info');
-                setTimeout(() => {
-                    makeRequest('github');
-                }, 500); // 延迟500ms确保页面完全加载
-            }
-        });
-
-        // 监听粘贴事件（用于测试）
-        document.addEventListener('paste', (e) => {
-            const pastedText = e.clipboardData.getData('text');
-            if (pastedText.startsWith('ghp_')) {
-                addLog(`✅ 检测到粘贴的Token: ${pastedText.substring(0, 20)}...`, 'success');
-                addLog(`🎊 复制功能测试成功！`, 'success');
-            }
+            // 自动发起带 Bearer Token 的请求
+            fetch('https://api.github.com/user', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            }).catch(() => {
+                // 忽略错误，只是为了产生网络请求
+            });
         });
     </script>
 </body>
