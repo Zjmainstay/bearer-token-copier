@@ -35,6 +35,12 @@
 4. 自动刷新并复制Token
 5. 直接粘贴使用（Ctrl+V / Cmd+V）
 
+### 在线测试
+
+安装插件后，可以使用在线Demo页面测试功能：
+
+👉 **Demo页面**: https://zjmainstay.github.io/bearer-token-copier/demo.html
+
 ## 🔒 隐私安全
 
 - ✅ 不上传数据：所有操作在本地完成
