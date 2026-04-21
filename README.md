@@ -7,9 +7,10 @@
 
 ## 🚀 功能特点
 
-- ✅ 自动监听网页HTTP请求
-- ✅ 智能捕获Authorization请求头
-- ✅ 一键刷新页面并复制Bearer Token
+- ✅ 自动监听网页HTTP请求，捕获 Authorization Bearer Token
+- ✅ 支持复制指定名称的 Cookie 值
+- ✅ 单击图标自动刷新页面并复制
+- ✅ 右键图标→选项，可切换复制模式
 - ✅ 友好的操作反馈通知
 - ✅ 100%本地操作，不上传数据
 
@@ -31,9 +32,10 @@
 
 1. 访问需要登录的网站（如GitHub）
 2. 登录账号，触发API请求
-3. 点击插件图标（工具栏右上角）
-4. 自动刷新并复制Token
-5. 直接粘贴使用（Ctrl+V / Cmd+V）
+3. 点击插件图标（工具栏右上角）自动刷新并复制 Bearer Token
+4. 直接粘贴使用（Ctrl+V / Cmd+V）
+
+> 如需复制 Cookie 值：右键图标 → 选项 → 切换为「Cookie 值」模式并填写 Cookie 名称
 
 ## 🔒 隐私安全
 
@@ -46,7 +48,7 @@
 
 - Chrome Extension Manifest V3
 - JavaScript ES6+
-- Chrome APIs (webRequest, clipboard, notifications)
+- Chrome APIs (webRequest, clipboard, notifications, storage, cookies)
 
 ## 📝 许可证
 

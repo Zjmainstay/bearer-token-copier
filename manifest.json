@@ -1,15 +1,17 @@
 {
   "manifest_version": 3,
   "name": "Bearer Token Copier",
-  "version": "1.0.0",
-  "description": "自动抓取网络请求中的Authorization Token并一键复制",
+  "version": "1.0.1",
+  "description": "一键复制页面的 Bearer Token 或指定 Cookie 值。单击图标自动刷新页面并捕获，右键图标→选项可切换模式。所有数据仅在本地处理，不收集、不上传。",
   "author": "Zjmainstay",
   "homepage_url": "https://github.com/Zjmainstay",
   "permissions": [
     "webRequest",
     "activeTab",
     "clipboardWrite",
-    "notifications"
+    "notifications",
+    "storage",
+    "cookies"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -25,8 +27,9 @@
     }
   ],
   "action": {
-    "default_title": "点击刷新并复制Token"
+    "default_title": "Bearer Token Copier"
   },
+  "options_page": "popup.html",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",

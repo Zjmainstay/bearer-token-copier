@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bearer Token Copier 配置</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      width: 320px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14px;
+      color: #333;
+      background: #f8f9fa;
+    }
+
+    .header {
+      background: #1a73e8;
+      color: white;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .header h1 {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+
+    .content {
+      padding: 16px;
+    }
+
+    .section {
+      background: white;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 10px 14px 6px;
+    }
+
+    .mode-option {
+      display: flex;
+      align-items: flex-start;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: background 0.15s;
+      gap: 10px;
+    }
+
+    .mode-option:hover {
+      background: #f5f9ff;
+    }
+
+    .mode-option:not(:last-child) {
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .mode-option input[type="radio"] {
+      margin-top: 2px;
+      accent-color: #1a73e8;
+      flex-shrink: 0;
+    }
+
+    .mode-option label {
+      cursor: pointer;
+      flex: 1;
+    }
+
+    .mode-label {
+      font-weight: 500;
+      color: #222;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .mode-desc {
+      font-size: 12px;
+      color: #888;
+    }
+
+    .cookie-input-section {
+      padding: 10px 14px 12px;
+      border-top: 1px solid #f0f0f0;
+      background: #fafbff;
+    }
+
+    .cookie-input-section label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .cookie-input-section input[type="text"] {
+      flex: 1;
+      padding: 7px 10px;
+      border: 1px solid #d0d7de;
+      border-radius: 6px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.15s;
+      color: #333;
+    }
+
+    .cookie-input-section input[type="text"]:focus {
+      border-color: #1a73e8;
+      box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.15);
+    }
+
+    .cookie-input-section input[type="text"]::placeholder {
+      color: #bbb;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 9px 14px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-primary {
+      background: #1a73e8;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #1557b0;
+    }
+
+    .btn-primary:active {
+      background: #0e47a1;
+    }
+
+    .btn-secondary {
+      background: #f1f3f4;
+      color: #444;
+    }
+
+    .btn-secondary:hover {
+      background: #e8eaed;
+    }
+
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      font-size: 12px;
+      border-radius: 6px;
+      margin-top: 4px;
+    }
+
+    .status-bar.hidden {
+      display: none;
+    }
+
+    .status-bar.success {
+      background: #e6f4ea;
+      color: #137333;
+    }
+
+    .status-bar.error {
+      background: #fce8e6;
+      color: #c5221f;
+    }
+
+    .status-icon {
+      font-size: 14px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <img src="icons/icon48.png" alt="icon">
+    <h1>Bearer Token Copier</h1>
+  </div>
+
+  <div class="content">
+
+    <!-- 模式选择 -->
+    <div class="section">
+      <div class="section-title">复制模式</div>
+
+      <div class="mode-option" id="opt-bearer">
+        <input type="radio" name="mode" id="mode-bearer" value="bearer" checked>
+        <label for="mode-bearer">
+          <span class="mode-label">Bearer Token</span>
+          <span class="mode-desc">从请求头 Authorization: Bearer ... 中提取</span>
+        </label>
+      </div>
+
+      <div class="mode-option" id="opt-cookie">
+        <input type="radio" name="mode" id="mode-cookie" value="cookie">
+        <label for="mode-cookie">
+          <span class="mode-label">Cookie 值</span>
+          <span class="mode-desc">复制当前页面指定名称的 Cookie</span>
+        </label>
+      </div>
+
+      <!-- Cookie 名配置（仅 cookie 模式显示） -->
+      <div id="cookie-config" class="cookie-input-section hidden">
+        <label for="cookie-name">Cookie 名称</label>
+        <div class="input-row">
+          <input type="text" id="cookie-name" placeholder="例如：session_id、token" autocomplete="off" spellcheck="false">
+        </div>
+      </div>
+    </div>
+
+    <!-- 保存状态 -->
+    <div id="status" class="status-bar hidden">
+      <span class="status-icon" id="status-icon"></span>
+      <span id="status-text"></span>
+    </div>
+
+    <!-- 操作按钮 -->
+    <div class="action-row">
+      <button class="btn btn-secondary" id="btn-reset">重置</button>
+      <button class="btn btn-primary" id="btn-save">保存配置</button>
+    </div>
+
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
