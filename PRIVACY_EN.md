@@ -1,6 +1,6 @@
 # Privacy Policy
 
-**Bearer Token Auto Copier** respects and protects user privacy.
+**Bearer Token Copier** respects and protects user privacy.
 
 ---
 
@@ -13,7 +13,7 @@ We do not collect:
 - Browsing history
 - Website content
 - User behavior data
-- Authentication tokens (except temporarily in memory for copy operation)
+- Authentication tokens or Cookie values (except temporarily in memory during copy operation)
 
 ---
 
@@ -21,21 +21,20 @@ We do not collect:
 
 All operations are performed **locally on your device**:
 
-- **Tokens exist only temporarily in browser memory**
+- **Tokens / Cookie values exist only temporarily in browser memory**
   - Captured when you click the extension icon
   - Copied to clipboard immediately
   - Released from memory after copy operation
   - Automatically cleared when browser is closed
 
+- **Local configuration storage**
+  - Uses `chrome.storage.local` to save your selected copy mode (Bearer Token or Cookie) and Cookie name
+  - Configuration data is stored only on your device and is never synced to the cloud or sent to any server
+
 - **No remote servers**
   - No data is sent to any server
   - No cloud services are used
   - Works completely offline
-
-- **No persistent storage**
-  - No data is saved to disk
-  - No cookies or local storage
-  - No databases
 
 ---
 
@@ -65,21 +64,26 @@ This extension requests the following permissions, used only for core functional
 - **Privacy**: Does not access other tabs
 
 ### clipboardWrite
-- **Purpose**: Copy captured token to clipboard
+- **Purpose**: Copy captured token or Cookie value to clipboard
 - **Scope**: Write-only, does not read clipboard
-- **Privacy**: Only copies Authorization tokens
+- **Privacy**: Only copies the value actively triggered by the user
 
 ### notifications
 - **Purpose**: Display operation results to user
 - **Scope**: Only operation feedback (success/failure)
 - **Privacy**: No marketing or ads
 
-### scripting
-- **Purpose**: Inject script to perform clipboard operation
-- **Scope**: Only for copy functionality
-- **Privacy**: Does not read or modify page content
+### storage
+- **Purpose**: Save user configuration locally (copy mode, Cookie name)
+- **Scope**: Only stores the extension's own settings; does not read data from other extensions or websites
+- **Privacy**: Configuration data never leaves your device
 
-**All permissions are only used when you actively click the extension icon.** No automatic background operations.
+### cookies
+- **Purpose**: Read the value of a specific named Cookie from the current page in Cookie mode
+- **Scope**: Only triggered when the user actively clicks the icon with Cookie mode configured; reads only the single Cookie specified by the user
+- **Privacy**: Does not scan or log other cookies
+
+**All permissions are only used when you actively click the extension icon.** No automatic background data collection.
 
 ---
 
@@ -121,7 +125,6 @@ This extension complies with:
 
 If you have any questions about this Privacy Policy, please contact us:
 
-- **Email**: zjmainstay@gmail.com
 - **GitHub Issues**: https://github.com/Zjmainstay/bearer-token-copier/issues
 - **GitHub Profile**: https://github.com/Zjmainstay
 
@@ -131,15 +134,13 @@ If you have any questions about this Privacy Policy, please contact us:
 
 You have the right to:
 - Know what data is collected (none in this case)
-- Access your data (none is stored)
-- Delete your data (none is stored)
+- Access your data (no personal data is stored)
+- Delete your data (local configuration can be cleared at any time by uninstalling the extension)
 - Opt-out of data collection (none is collected)
-
-Since this extension does not collect any data, these rights are automatically satisfied.
 
 ---
 
-**Last Updated**: February 27, 2026
+**Last Updated**: April 21, 2026
 
 **Version**: 1.0.1
 
@@ -151,7 +152,7 @@ Since this extension does not collect any data, these rights are automatically s
 - ✅ We don't collect your data
 - ✅ Everything happens on your device
 - ✅ No servers, no tracking, no ads
+- ✅ Local configuration stays on your device and is never uploaded
 - ✅ Open source and transparent
-- ✅ You're in complete control
 
 **Your privacy is fully protected.**
